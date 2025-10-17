@@ -111,7 +111,7 @@ curl http://localhost:8000/examples
 python cli.py
 
 # Single query
-python cli.py "What is the total cost?"
+What is the total cost?
 ```
 
 ## 💡 Example Queries
@@ -472,10 +472,5 @@ Environment variables (optional):
 - Quick one-off queries
 - SSH remote access
 
-## �📝 License
-
-Educational and demonstration purposes.
-
----
 
 **Built with:** Python 3.11 | Poetry | Streamlit | FastAPI | Ollama | SQLite | Plotly
