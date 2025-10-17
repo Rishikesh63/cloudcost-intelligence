@@ -1,0 +1,1047 @@
+{
+  "aws_cost": {
+    "description": "Auto-extracted: aws_cost table",
+    "aliases": [
+      "aws cost"
+    ],
+    "columns": {
+      "availabilityzone": {
+        "description": "Auto-extracted: availabilityzone field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "availabilityzone"
+        ]
+      },
+      "billedcost": {
+        "description": "The actual amount billed to the customer",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "cost",
+          "bill",
+          "charge",
+          "amount",
+          "price",
+          "spend",
+          "expense"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "billingaccountid": {
+        "description": "Auto-extracted: billingaccountid field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingaccountid"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "billingaccountname": {
+        "description": "Auto-extracted: billingaccountname field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingaccountname"
+        ]
+      },
+      "billingcurrency": {
+        "description": "Auto-extracted: billingcurrency field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingcurrency"
+        ]
+      },
+      "billingperiodend": {
+        "description": "Auto-extracted: billingperiodend field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingperiodend"
+        ]
+      },
+      "billingperiodstart": {
+        "description": "Auto-extracted: billingperiodstart field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingperiodstart"
+        ]
+      },
+      "chargecategory": {
+        "description": "Auto-extracted: chargecategory field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargecategory"
+        ]
+      },
+      "chargeclass": {
+        "description": "Auto-extracted: chargeclass field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargeclass"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "chargedescription": {
+        "description": "Auto-extracted: chargedescription field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargedescription"
+        ]
+      },
+      "chargefrequency": {
+        "description": "Auto-extracted: chargefrequency field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargefrequency"
+        ]
+      },
+      "chargeperiodend": {
+        "description": "Auto-extracted: chargeperiodend field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargeperiodend"
+        ]
+      },
+      "chargeperiodstart": {
+        "description": "Auto-extracted: chargeperiodstart field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargeperiodstart"
+        ]
+      },
+      "commitmentdiscountcategory": {
+        "description": "Auto-extracted: commitmentdiscountcategory field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "commitmentdiscountcategory"
+        ]
+      },
+      "commitmentdiscountid": {
+        "description": "Auto-extracted: commitmentdiscountid field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "commitmentdiscountid"
+        ]
+      },
+      "commitmentdiscountname": {
+        "description": "Auto-extracted: commitmentdiscountname field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "commitmentdiscountname"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "commitmentdiscountstatus": {
+        "description": "Auto-extracted: commitmentdiscountstatus field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "commitmentdiscountstatus"
+        ]
+      },
+      "commitmentdiscounttype": {
+        "description": "Auto-extracted: commitmentdiscounttype field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "commitmentdiscounttype"
+        ]
+      },
+      "consumedquantity": {
+        "description": "Auto-extracted: consumedquantity field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "consumedquantity"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "consumedunit": {
+        "description": "Auto-extracted: consumedunit field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "consumedunit"
+        ]
+      },
+      "contractedcost": {
+        "description": "Auto-extracted: contractedcost field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "contractedcost"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "contractedunitprice": {
+        "description": "Auto-extracted: contractedunitprice field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "contractedunitprice"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "effectivecost": {
+        "description": "Auto-extracted: effectivecost field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "effectivecost"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "invoiceissuername": {
+        "description": "Auto-extracted: invoiceissuername field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "invoiceissuername"
+        ]
+      },
+      "listcost": {
+        "description": "Auto-extracted: listcost field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "listcost"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "listunitprice": {
+        "description": "Auto-extracted: listunitprice field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "listunitprice"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "pricingcategory": {
+        "description": "Auto-extracted: pricingcategory field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "pricingcategory"
+        ]
+      },
+      "pricingquantity": {
+        "description": "Auto-extracted: pricingquantity field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "pricingquantity"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "pricingunit": {
+        "description": "Auto-extracted: pricingunit field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "pricingunit"
+        ]
+      },
+      "providername": {
+        "description": "Auto-extracted: providername field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "providername"
+        ]
+      },
+      "publishername": {
+        "description": "Auto-extracted: publishername field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "publishername"
+        ]
+      },
+      "regionid": {
+        "description": "Auto-extracted: regionid field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "regionid"
+        ]
+      },
+      "regionname": {
+        "description": "Cloud region where resources are deployed",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "region",
+          "location",
+          "geography",
+          "area"
+        ]
+      },
+      "resourceid": {
+        "description": "Auto-extracted: resourceid field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "resourceid"
+        ]
+      },
+      "resourcename": {
+        "description": "Auto-extracted: resourcename field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "resourcename"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "resourcetype": {
+        "description": "Auto-extracted: resourcetype field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "resourcetype"
+        ]
+      },
+      "servicecategory": {
+        "description": "Auto-extracted: servicecategory field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "servicecategory"
+        ]
+      },
+      "servicename": {
+        "description": "Name of the cloud service used",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "service",
+          "product",
+          "service name"
+        ]
+      },
+      "skuid": {
+        "description": "Auto-extracted: skuid field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "skuid"
+        ]
+      },
+      "skupriceid": {
+        "description": "Auto-extracted: skupriceid field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "skupriceid"
+        ]
+      },
+      "subaccountid": {
+        "description": "Auto-extracted: subaccountid field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "subaccountid"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "subaccountname": {
+        "description": "Name of the account or subscription",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "account",
+          "subaccount",
+          "subscription"
+        ]
+      },
+      "tags": {
+        "description": "Auto-extracted: tags field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "tags"
+        ]
+      },
+      "x_costcategories": {
+        "description": "Auto-extracted: x_costcategories field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "x costcategories"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "x_discounts": {
+        "description": "Auto-extracted: x_discounts field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "x discounts"
+        ]
+      },
+      "x_operation": {
+        "description": "Auto-extracted: x_operation field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "x operation"
+        ]
+      },
+      "x_servicecode": {
+        "description": "Auto-extracted: x_servicecode field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "x servicecode"
+        ]
+      },
+      "x_usagetype": {
+        "description": "Auto-extracted: x_usagetype field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "x usagetype"
+        ]
+      }
+    }
+  },
+  "azure_cost": {
+    "description": "Auto-extracted: azure_cost table",
+    "aliases": [
+      "azure cost"
+    ],
+    "columns": {
+      "billedcost": {
+        "description": "The actual amount billed to the customer",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "cost",
+          "bill",
+          "charge",
+          "amount",
+          "price",
+          "spend",
+          "expense"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "billingaccountid": {
+        "description": "Auto-extracted: billingaccountid field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingaccountid"
+        ]
+      },
+      "billingaccountname": {
+        "description": "Auto-extracted: billingaccountname field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingaccountname"
+        ]
+      },
+      "billingaccounttype": {
+        "description": "Auto-extracted: billingaccounttype field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingaccounttype"
+        ]
+      },
+      "billingcurrency": {
+        "description": "Auto-extracted: billingcurrency field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingcurrency"
+        ]
+      },
+      "billingperiodend": {
+        "description": "Auto-extracted: billingperiodend field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingperiodend"
+        ]
+      },
+      "billingperiodstart": {
+        "description": "Auto-extracted: billingperiodstart field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "billingperiodstart"
+        ]
+      },
+      "chargecategory": {
+        "description": "Auto-extracted: chargecategory field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargecategory"
+        ]
+      },
+      "chargeclass": {
+        "description": "Auto-extracted: chargeclass field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargeclass"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "chargedescription": {
+        "description": "Auto-extracted: chargedescription field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargedescription"
+        ]
+      },
+      "chargefrequency": {
+        "description": "Auto-extracted: chargefrequency field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargefrequency"
+        ]
+      },
+      "chargeperiodend": {
+        "description": "Auto-extracted: chargeperiodend field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargeperiodend"
+        ]
+      },
+      "chargeperiodstart": {
+        "description": "Auto-extracted: chargeperiodstart field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "chargeperiodstart"
+        ]
+      },
+      "commitmentdiscountcategory": {
+        "description": "Auto-extracted: commitmentdiscountcategory field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "commitmentdiscountcategory"
+        ]
+      },
+      "commitmentdiscountid": {
+        "description": "Auto-extracted: commitmentdiscountid field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "commitmentdiscountid"
+        ]
+      },
+      "commitmentdiscountname": {
+        "description": "Auto-extracted: commitmentdiscountname field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "commitmentdiscountname"
+        ]
+      },
+      "commitmentdiscountstatus": {
+        "description": "Auto-extracted: commitmentdiscountstatus field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "commitmentdiscountstatus"
+        ]
+      },
+      "commitmentdiscounttype": {
+        "description": "Auto-extracted: commitmentdiscounttype field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "commitmentdiscounttype"
+        ]
+      },
+      "consumedquantity": {
+        "description": "Auto-extracted: consumedquantity field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "consumedquantity"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "consumedunit": {
+        "description": "Auto-extracted: consumedunit field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "consumedunit"
+        ]
+      },
+      "contractedcost": {
+        "description": "Auto-extracted: contractedcost field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "contractedcost"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "contractedunitprice": {
+        "description": "Auto-extracted: contractedunitprice field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "contractedunitprice"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "effectivecost": {
+        "description": "Auto-extracted: effectivecost field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "effectivecost"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "invoiceissuername": {
+        "description": "Auto-extracted: invoiceissuername field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "invoiceissuername"
+        ]
+      },
+      "listcost": {
+        "description": "Auto-extracted: listcost field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "listcost"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "listunitprice": {
+        "description": "Auto-extracted: listunitprice field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "listunitprice"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "pricingcategory": {
+        "description": "Auto-extracted: pricingcategory field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "pricingcategory"
+        ]
+      },
+      "pricingquantity": {
+        "description": "Auto-extracted: pricingquantity field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "pricingquantity"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "pricingunit": {
+        "description": "Auto-extracted: pricingunit field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "pricingunit"
+        ]
+      },
+      "providername": {
+        "description": "Auto-extracted: providername field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "providername"
+        ]
+      },
+      "publishername": {
+        "description": "Auto-extracted: publishername field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "publishername"
+        ]
+      },
+      "regionid": {
+        "description": "Auto-extracted: regionid field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "regionid"
+        ]
+      },
+      "regionname": {
+        "description": "Cloud region where resources are deployed",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "region",
+          "location",
+          "geography",
+          "area"
+        ]
+      },
+      "resourceid": {
+        "description": "Auto-extracted: resourceid field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "resourceid"
+        ]
+      },
+      "resourcename": {
+        "description": "Auto-extracted: resourcename field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "resourcename"
+        ]
+      },
+      "resourcetype": {
+        "description": "Auto-extracted: resourcetype field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "resourcetype"
+        ]
+      },
+      "servicecategory": {
+        "description": "Auto-extracted: servicecategory field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "servicecategory"
+        ]
+      },
+      "servicename": {
+        "description": "Name of the cloud service used",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "service",
+          "product",
+          "service name"
+        ]
+      },
+      "skuid": {
+        "description": "Auto-extracted: skuid field",
+        "data_type": "REAL",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "skuid"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "skupriceid": {
+        "description": "Auto-extracted: skupriceid field",
+        "data_type": "INTEGER",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "skupriceid"
+        ],
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "subaccountid": {
+        "description": "Auto-extracted: subaccountid field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "subaccountid"
+        ]
+      },
+      "subaccountname": {
+        "description": "Name of the account or subscription",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "account",
+          "subaccount",
+          "subscription"
+        ]
+      },
+      "subaccounttype": {
+        "description": "Auto-extracted: subaccounttype field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "subaccounttype"
+        ]
+      },
+      "tags": {
+        "description": "Auto-extracted: tags field",
+        "data_type": "TEXT",
+        "nullable": true,
+        "primary_key": false,
+        "aliases": [
+          "tags"
+        ]
+      }
+    }
+  }
+}

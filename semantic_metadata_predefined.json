@@ -1,0 +1,311 @@
+{
+  "aws_cost": {
+    "description": "AWS cloud cost and usage data",
+    "aliases": [
+      "aws",
+      "amazon web services",
+      "amazon costs",
+      "ec2 costs"
+    ],
+    "columns": {
+      "billedcost": {
+        "description": "The actual amount billed to the customer",
+        "aliases": [
+          "cost",
+          "bill",
+          "charge",
+          "amount",
+          "price",
+          "spend",
+          "expense"
+        ],
+        "data_type": "REAL",
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ],
+        "examples": [
+          "total cost",
+          "average cost",
+          "cost breakdown"
+        ]
+      },
+      "effective_cost": {
+        "description": "Cost after applying discounts and credits",
+        "aliases": [
+          "net cost",
+          "actual cost",
+          "final cost"
+        ],
+        "data_type": "REAL",
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX"
+        ]
+      },
+      "servicename": {
+        "description": "Name of the AWS service used",
+        "aliases": [
+          "service",
+          "product",
+          "aws service"
+        ],
+        "data_type": "TEXT",
+        "examples": [
+          "EC2",
+          "S3",
+          "RDS",
+          "Lambda",
+          "Elastic Compute Cloud"
+        ]
+      },
+      "service_category": {
+        "description": "Category of the service",
+        "aliases": [
+          "category",
+          "service type"
+        ],
+        "data_type": "TEXT",
+        "examples": [
+          "Compute",
+          "Storage",
+          "Database",
+          "Networking"
+        ]
+      },
+      "regionname": {
+        "description": "AWS region where resources are deployed",
+        "aliases": [
+          "region",
+          "location",
+          "geography",
+          "area"
+        ],
+        "data_type": "TEXT",
+        "examples": [
+          "us-east-1",
+          "Asia Pacific (Sydney)",
+          "EU (Ireland)"
+        ]
+      },
+      "resourcetype": {
+        "description": "Type of cloud resource",
+        "aliases": [
+          "resource",
+          "instance type"
+        ],
+        "data_type": "TEXT"
+      },
+      "billing_period_start": {
+        "description": "Start date of the billing period",
+        "aliases": [
+          "start date",
+          "period start",
+          "from date",
+          "beginning"
+        ],
+        "data_type": "TEXT",
+        "temporal": true
+      },
+      "billing_period_end": {
+        "description": "End date of the billing period",
+        "aliases": [
+          "end date",
+          "period end",
+          "to date",
+          "until"
+        ],
+        "data_type": "TEXT",
+        "temporal": true
+      },
+      "tags": {
+        "description": "JSON tags associated with the resource",
+        "aliases": [
+          "labels",
+          "metadata",
+          "tag"
+        ],
+        "data_type": "TEXT"
+      },
+      "consumed_quantity": {
+        "description": "Amount of service consumed",
+        "aliases": [
+          "quantity",
+          "usage",
+          "volume",
+          "amount used"
+        ],
+        "data_type": "REAL",
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX"
+        ]
+      },
+      "subaccountname": {
+        "description": "Name of the AWS sub-account",
+        "aliases": [
+          "account",
+          "subaccount",
+          "account name"
+        ],
+        "data_type": "TEXT"
+      }
+    }
+  },
+  "azure_cost": {
+    "description": "Azure cloud cost and usage data",
+    "aliases": [
+      "azure",
+      "microsoft azure",
+      "azure costs"
+    ],
+    "columns": {
+      "billedcost": {
+        "description": "The actual amount billed to the customer",
+        "aliases": [
+          "cost",
+          "bill",
+          "charge",
+          "amount",
+          "price",
+          "spend",
+          "expense"
+        ],
+        "data_type": "REAL",
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX",
+          "COUNT"
+        ]
+      },
+      "effective_cost": {
+        "description": "Cost after applying discounts and credits",
+        "aliases": [
+          "net cost",
+          "actual cost",
+          "final cost"
+        ],
+        "data_type": "REAL",
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX"
+        ]
+      },
+      "servicename": {
+        "description": "Name of the Azure service used",
+        "aliases": [
+          "service",
+          "product",
+          "azure service"
+        ],
+        "data_type": "TEXT",
+        "examples": [
+          "Virtual Machines",
+          "Storage Accounts",
+          "Azure SQL"
+        ]
+      },
+      "service_category": {
+        "description": "Category of the service",
+        "aliases": [
+          "category",
+          "service type"
+        ],
+        "data_type": "TEXT",
+        "examples": [
+          "Compute",
+          "Storage",
+          "Database",
+          "Networking"
+        ]
+      },
+      "regionname": {
+        "description": "Azure region where resources are deployed",
+        "aliases": [
+          "region",
+          "location",
+          "geography",
+          "area"
+        ],
+        "data_type": "TEXT",
+        "examples": [
+          "Australia East",
+          "Australia Southeast",
+          "US East"
+        ]
+      },
+      "resourcetype": {
+        "description": "Type of Azure resource",
+        "aliases": [
+          "resource",
+          "instance type"
+        ],
+        "data_type": "TEXT"
+      },
+      "billing_period_start": {
+        "description": "Start date of the billing period",
+        "aliases": [
+          "start date",
+          "period start",
+          "from date"
+        ],
+        "data_type": "TEXT",
+        "temporal": true
+      },
+      "billing_period_end": {
+        "description": "End date of the billing period",
+        "aliases": [
+          "end date",
+          "period end",
+          "to date"
+        ],
+        "data_type": "TEXT",
+        "temporal": true
+      },
+      "tags": {
+        "description": "JSON tags associated with the resource",
+        "aliases": [
+          "labels",
+          "metadata",
+          "tag"
+        ],
+        "data_type": "TEXT"
+      },
+      "consumed_quantity": {
+        "description": "Amount of service consumed",
+        "aliases": [
+          "quantity",
+          "usage",
+          "volume"
+        ],
+        "data_type": "REAL",
+        "aggregations": [
+          "SUM",
+          "AVG",
+          "MIN",
+          "MAX"
+        ]
+      },
+      "subaccountname": {
+        "description": "Name of the Azure subscription",
+        "aliases": [
+          "subscription",
+          "account",
+          "account name"
+        ],
+        "data_type": "TEXT"
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "cloudcost-intelligence"
+version = "1.0.0"
+description = "Text2SQL Engine for Cloud Cost Analysis with Ollama LLM"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{include = "*.py"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2.0"
+sqlalchemy = "^2.0.25"
+openai = ">=1.58.0,<2.0.0"
+python-dotenv = "^1.0.0"
+streamlit = "^1.31.0"
+plotly = "^5.18.0"
+numpy = "^1.26.3"
+tiktoken = ">=0.7.0"
+tabulate = "^0.9.0"
+
+fastapi = "^0.119.0"
+uvicorn = {extras = ["standard"], version = "^0.37.0"}
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.0.0"
+flake8 = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+cloudcost-setup = "setup:main"
+cloudcost-cli = "cli:main"
+cloudcost-test = "test_suite:main"
