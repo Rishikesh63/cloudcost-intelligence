@@ -26,7 +26,7 @@ class DatabaseManager:
         
         # AWS Cost Table
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS aws_cost (
+            CREATE TABLE IF NOT EXISTS aws_cost_usage (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 availability_zone TEXT,
                 billed_cost REAL,
@@ -81,7 +81,7 @@ class DatabaseManager:
         
         # Azure Cost Table
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS azure_cost (
+            CREATE TABLE IF NOT EXISTS azure_cost_usage (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 billed_cost REAL,
                 billing_account_id TEXT,
@@ -178,12 +178,12 @@ def initialize_database():
     # Load AWS data
     aws_csv = "mock_data_sets/aws_cost_usage.csv"
     if os.path.exists(aws_csv):
-        db.load_csv_data(aws_csv, "aws_cost")
+        db.load_csv_data(aws_csv, "aws_cost_usage")
     
     # Load Azure data
     azure_csv = "mock_data_sets/azure_cost_usage.csv"
     if os.path.exists(azure_csv):
-        db.load_csv_data(azure_csv, "azure_cost")
+        db.load_csv_data(azure_csv, "azure_cost_usage")
     
     db.close()
     print("Database initialized successfully!")

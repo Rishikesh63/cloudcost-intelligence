@@ -296,7 +296,81 @@ Enhanced:  "Show me top 10 services in the last 30 days for AWS"
 - ✅ **User-Friendly** - Guides users with helpful options
 - ✅ **Flexible** - Works with any interface (Web, API, CLI)
 
-## 🎯 How It Works
+## �️ JSON Query Helpers (Tag-Based Queries)
+
+The system includes powerful **JSON extraction utilities** for querying tags and cost categories within your cloud billing data.
+
+### 📦 What It Does
+
+Cloud cost data often includes JSON columns like:
+- **`tags`**: `{"Environment": "Production", "Team": "Engineering", "Project": "CloudMigration"}`
+- **`cost_categories`**: `{"CostCenter": "IT", "Department": "R&D"}`
+
+Standard SQL makes this hard to query. Our JSON helpers make it easy!
+
+### 🚀 Usage
+
+```python
+from database_manager import DatabaseManager
+from json_query_helpers import JSONQueryHelper
+
+# Initialize
+db = DatabaseManager()
+db.connect()
+helper = JSONQueryHelper(db)
+
+# Example 1: Get costs by Environment tag
+df = helper.extract_json_field('aws_cost_usage', 'tags', 'Environment')
+# Returns: Production: $15,234 | Development: $8,765
+
+# Example 2: Query specific tag value
+df = helper.query_by_tag('aws_cost_usage', 'Environment', 'Production')
+# Returns: Breakdown by service/region for Production only
+
+# Example 3: Discover available tags
+tags = helper.get_available_json_keys('aws_cost_usage', 'tags')
+# Returns: {'Environment', 'Team', 'Project', 'Owner'}
+
+# Example 4: Natural language detection
+result = helper.detect_tag_query("Show me costs by environment tag")
+# Returns: {'is_tag_query': True, 'tag_key': 'Environment'}
+```
+
+### 📊 Supported Queries
+
+| Query Type | Example | Result |
+|------------|---------|--------|
+| **By Tag** | "Show cost by environment tag" | Costs grouped by Environment values |
+| **Specific Value** | "Show production environment costs" | Only Production tagged resources |
+| **By Cost Category** | "Show costs by cost center" | Grouped by CostCenter category |
+| **Service Breakdown** | "EC2 costs by team tag" | EC2 costs split by Team |
+
+### 🛠️ Available Methods
+
+- `extract_json_field()` - Extract and aggregate by JSON key
+- `query_by_tag()` - Filter and group by tag values
+- `query_by_cost_category()` - Filter by cost category
+- `get_available_json_keys()` - Discover available JSON keys
+- `generate_tag_query_sql()` - Generate SQL for tag queries
+- `detect_tag_query()` - Detect tag queries from natural language
+
+### ✨ Integration with Text2SQL
+
+The JSON helpers automatically integrate with the Text2SQL engine:
+
+```
+User: "Show me costs by environment tag"
+      ↓
+Text2SQL detects tag query
+      ↓
+Uses JSONQueryHelper.generate_tag_query_sql()
+      ↓
+Executes: SELECT json_extract(tags, '$.Environment'), SUM(billed_cost)...
+      ↓
+Returns: Nice formatted results by Environment
+```
+
+## �🎯 How It Works
 
 1. **You ask a question** in natural language
 2. **Engine analyzes** your intent and requirements
@@ -364,6 +438,7 @@ CloudCost-Intelligence/
 ├── api.py                       # FastAPI REST API endpoint
 ├── cli.py                       # Command-line interface
 ├── agentic_clarification.py     # Smart query clarification agent
+├── json_query_helpers.py        # JSON field extraction utilities (tags, cost categories)
 ├── database_manager.py          # Database operations
 ├── semantic_metadata.py         # Schema metadata
 ├── text2sql_engine.py           # Text-to-SQL converter
@@ -384,6 +459,7 @@ CloudCost-Intelligence/
 - `semantic_metadata.py` - Schema understanding and aliases
 - `text2sql_engine.py` - Natural language to SQL conversion
 - `agentic_clarification.py` - Smart query ambiguity detection and clarification
+- `json_query_helpers.py` - JSON extraction for tags and cost categories
 
 **User Interfaces:**
 - `app.py` - Streamlit web interface with visualizations

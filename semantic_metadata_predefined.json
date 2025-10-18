@@ -1,5 +1,5 @@
 {
-  "aws_cost": {
+  "aws_cost_usage": {
     "description": "AWS cloud cost and usage data",
     "aliases": [
       "aws",
@@ -159,7 +159,7 @@
       }
     }
   },
-  "azure_cost": {
+  "azure_cost_usage": {
     "description": "Azure cloud cost and usage data",
     "aliases": [
       "azure",

@@ -17,31 +17,31 @@ class TestSemanticMetadata(unittest.TestCase):
     def test_table_detection_aws(self):
         """Test AWS table detection"""
         table = self.manager.get_table_from_intent("Show me AWS costs")
-        self.assertEqual(table, "aws_cost")
+        self.assertEqual(table, "aws_cost_usage")
     
     def test_table_detection_azure(self):
         """Test Azure table detection"""
         table = self.manager.get_table_from_intent("Show me Azure costs")
-        self.assertEqual(table, "azure_cost")
+        self.assertEqual(table, "azure_cost_usage")
     
     def test_column_match_cost(self):
         """Test column matching for cost"""
-        column = self.manager.find_column_match("aws_cost", "cost")
+        column = self.manager.find_column_match("aws_cost_usage", "cost")
         self.assertEqual(column, "billed_cost")
     
     def test_column_match_service(self):
         """Test column matching for service"""
-        column = self.manager.find_column_match("aws_cost", "service")
+        column = self.manager.find_column_match("aws_cost_usage", "service")
         self.assertEqual(column, "servicename")
     
     def test_aggregation_total(self):
         """Test aggregation detection for total"""
-        agg = self.manager.get_aggregation_function("total cost", "billed_cost", "aws_cost")
+        agg = self.manager.get_aggregation_function("total cost", "billed_cost", "aws_cost_usage")
         self.assertEqual(agg, "SUM")
     
     def test_aggregation_average(self):
         """Test aggregation detection for average"""
-        agg = self.manager.get_aggregation_function("average cost", "billed_cost", "aws_cost")
+        agg = self.manager.get_aggregation_function("average cost", "billed_cost", "aws_cost_usage")
         self.assertEqual(agg, "AVG")
 
 
@@ -79,7 +79,7 @@ class TestText2SQLEngine(unittest.TestCase):
         """Test SQL generation for simple query"""
         intent = {
             'query_type': 'aggregation',
-            'table': 'aws_cost',
+            'table': 'aws_cost_usage',
             'columns': ['billed_cost'],
             'aggregations': {},
             'filters': [],
@@ -89,13 +89,13 @@ class TestText2SQLEngine(unittest.TestCase):
         }
         sql = self.engine.build_sql_from_intent(intent, "total cost")
         self.assertIn("SUM(billed_cost)", sql)
-        self.assertIn("FROM aws_cost", sql)
+        self.assertIn("FROM aws_cost_usage", sql)
     
     def test_sql_generation_with_groupby(self):
         """Test SQL generation with GROUP BY"""
         intent = {
             'query_type': 'aggregation',
-            'table': 'aws_cost',
+            'table': 'aws_cost_usage',
             'columns': ['billed_cost'],
             'aggregations': {},
             'filters': [],
@@ -129,13 +129,13 @@ class TestDatabaseManager(unittest.TestCase):
     
     def test_query_execution(self):
         """Test query execution"""
-        df = self.db.execute_query("SELECT COUNT(*) as count FROM aws_cost LIMIT 1")
+        df = self.db.execute_query("SELECT COUNT(*) as count FROM aws_cost_usage LIMIT 1")
         self.assertIsNotNone(df)
         self.assertIn('count', df.columns)
     
     def test_table_schema(self):
         """Test getting table schema"""
-        schema = self.db.get_table_schema("aws_cost")
+        schema = self.db.get_table_schema("aws_cost_usage")
         self.assertIsNotNone(schema)
         self.assertGreater(len(schema), 0)
 
@@ -173,3 +173,4 @@ def run_tests():
 if __name__ == "__main__":
     success = run_tests()
     exit(0 if success else 1)
+

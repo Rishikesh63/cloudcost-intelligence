@@ -20,7 +20,7 @@ class SemanticMetadataManager:
     def _initialize_metadata(self) -> Dict:
         """Initialize semantic metadata for cloud cost tables"""
         return {
-            "aws_cost": {
+            "aws_cost_usage": {
                 "description": "AWS cloud cost and usage data",
                 "aliases": ["aws", "amazon web services", "amazon costs", "ec2 costs"],
                 "columns": {
@@ -90,7 +90,7 @@ class SemanticMetadataManager:
                     }
                 }
             },
-            "azure_cost": {
+            "azure_cost_usage": {
                 "description": "Azure cloud cost and usage data",
                 "aliases": ["azure", "microsoft azure", "azure costs"],
                 "columns": {
@@ -166,10 +166,10 @@ class SemanticMetadataManager:
         text_lower = text.lower()
         
         # Check for specific provider mentions
-        if any(alias in text_lower for alias in self.metadata["aws_cost"]["aliases"]):
-            return "aws_cost"
-        elif any(alias in text_lower for alias in self.metadata["azure_cost"]["aliases"]):
-            return "azure_cost"
+        if any(alias in text_lower for alias in self.metadata["aws_cost_usage"]["aliases"]):
+            return "aws_cost_usage"
+        elif any(alias in text_lower for alias in self.metadata["azure_cost_usage"]["aliases"]):
+            return "azure_cost_usage"
         
         # Default to both tables if no specific provider mentioned
         return None

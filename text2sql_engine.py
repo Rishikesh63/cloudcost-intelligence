@@ -83,7 +83,7 @@ class Text2SQLEngine:
         intent["table"] = self.metadata_manager.get_table_from_intent(natural_query)
         if not intent["table"]:
             # If no specific provider mentioned, check both tables
-            intent["table"] = "aws_cost"  # Default to AWS for now
+            intent["table"] = "aws_cost_usage"  # Default to AWS for now
         
         # Detect aggregation patterns
         if any(word in query_lower for word in ["total", "sum", "average", "avg", "count", "max", "min"]):
@@ -217,7 +217,7 @@ Generate ONLY the SQL query without any explanation or markdown formatting:"""
         """Get formatted schema information for LLM context"""
         context = ""
         
-        for table_name in ["aws_cost", "azure_cost"]:
+        for table_name in ["aws_cost_usage", "azure_cost_usage"]:
             context += f"\nTable: {table_name}\n"
             context += f"Description: {self.metadata_manager.metadata[table_name]['description']}\n"
             context += "Columns:\n"
