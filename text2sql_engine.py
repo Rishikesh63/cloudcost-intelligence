@@ -290,6 +290,17 @@ Important Guidelines:
     - NO parentheses around SELECT statements in UNION
     - NO subqueries like (SELECT * FROM table)
     - Each SELECT must have same number and type of columns
+16. **CRITICAL - RESOURCETYPE Values (Case-sensitive!):**
+    - User may say "EC2" or "VM" but database uses different values
+    - AWS resourcetype values: 'instance' (NOT 'EC2'), 'bucket' (NOT 'S3'), 'volume' (NOT 'EBS'), 'distribution', or empty ''
+    - Azure resourcetype values: 'Virtual machine' (NOT 'VM'), 'Storage account', 'Disk', 'Key vault', 'App Service web app'
+    - When user asks about EC2, use: RESOURCETYPE = 'instance'
+    - When user asks about VMs, use: RESOURCETYPE = 'Virtual machine'
+    - When user asks about S3, use: RESOURCETYPE = 'bucket'
+    - Most AWS records have EMPTY resourcetype, so if query returns 0 results, remove the resourcetype filter
+17. **Filter with BILLEDCOST > 0:**
+    - Always include "WHERE billedcost > 0" or "AND billedcost > 0" to exclude zero-cost entries
+    - This ensures meaningful cost analysis results
 
 Natural Language Question: {natural_query}
 
@@ -319,6 +330,9 @@ Generate ONLY the SQL query without any explanation or markdown formatting:"""
             
             # Normalize region filters (region codes to names)
             sql_query = self._normalize_region_filter(sql_query)
+            
+            # Normalize resource type filters (EC2 -> instance, VM -> Virtual machine, etc.)
+            sql_query = self._normalize_resourcetype_filter(sql_query)
             
             return sql_query
             
@@ -494,6 +508,92 @@ Generate ONLY the SQL query without any explanation or markdown formatting:"""
         
         return sql
     
+    def _normalize_resourcetype_filter(self, sql: str) -> str:
+        """
+        Convert common user resource type terms to actual database values.
+        
+        Database contains:
+        - AWS: 'instance' (EC2), 'bucket' (S3), 'volume' (EBS), 'distribution' (CloudFront), '' (empty for many)
+        - Azure: 'Virtual machine', 'Storage account', 'Disk', 'Key vault', 'App Service web app', etc.
+        
+        Users commonly say: 'EC2', 'VM', 'S3', 'blob storage', etc.
+        """
+        
+        # Map user-friendly terms to actual database RESOURCETYPE values
+        # Format: {pattern_to_match: (aws_value, azure_value)}
+        resource_mappings = {
+            # EC2 / Virtual Machines
+            'EC2': ('instance', 'Virtual machine'),
+            'ec2': ('instance', 'Virtual machine'),
+            'virtual machine': ('instance', 'Virtual machine'),
+            'VM': ('instance', 'Virtual machine'),
+            'vm': ('instance', 'Virtual machine'),
+            'compute instance': ('instance', 'Virtual machine'),
+            'instance': ('instance', 'Virtual machine'),
+            
+            # Storage
+            'S3': ('bucket', 'Storage account'),
+            's3': ('bucket', 'Storage account'),
+            'bucket': ('bucket', 'Storage account'),
+            'storage': ('bucket', 'Storage account'),
+            'blob': ('bucket', 'Storage account'),
+            'blob storage': ('bucket', 'Storage account'),
+            
+            # Disks / Volumes
+            'EBS': ('volume', 'Disk'),
+            'ebs': ('volume', 'Disk'),
+            'volume': ('volume', 'Disk'),
+            'disk': ('volume', 'Disk'),
+            
+            # CDN
+            'CloudFront': ('distribution', None),
+            'cloudfront': ('distribution', None),
+            'CDN': ('distribution', None),
+            'cdn': ('distribution', None),
+            
+            # Azure specific
+            'key vault': (None, 'Key vault'),
+            'keyvault': (None, 'Key vault'),
+            'app service': (None, 'App Service web app'),
+            'web app': (None, 'App Service web app'),
+        }
+        
+        # Check which table(s) the query references
+        is_aws = 'aws_cost_usage' in sql.lower()
+        is_azure = 'azure_cost_usage' in sql.lower()
+        
+        for user_term, (aws_value, azure_value) in resource_mappings.items():
+            # Pattern 1: RESOURCETYPE = 'user_term'
+            # Pattern 2: resourcetype = "user_term"
+            # Case insensitive matching
+            
+            # For AWS table
+            if is_aws and aws_value:
+                # Find and replace in WHERE clauses for aws_cost_usage table
+                # Match: resourcetype = 'EC2' or RESOURCETYPE = "VM" etc.
+                pattern = rf"(FROM\s+aws_cost_usage[^F]*WHERE[^F]*?)RESOURCETYPE\s*=\s*['\"]({re.escape(user_term)})['\"]"
+                replacement = rf"\1RESOURCETYPE = '{aws_value}'"
+                sql = re.sub(pattern, replacement, sql, flags=re.IGNORECASE)
+                
+                # Also handle AND clauses
+                pattern = rf"(FROM\s+aws_cost_usage[^F]*?)\s+AND\s+RESOURCETYPE\s*=\s*['\"]({re.escape(user_term)})['\"]"
+                replacement = rf"\1 AND RESOURCETYPE = '{aws_value}'"
+                sql = re.sub(pattern, replacement, sql, flags=re.IGNORECASE)
+            
+            # For Azure table
+            if is_azure and azure_value:
+                # Find and replace in WHERE clauses for azure_cost_usage table
+                pattern = rf"(FROM\s+azure_cost_usage[^F]*WHERE[^F]*?)RESOURCETYPE\s*=\s*['\"]({re.escape(user_term)})['\"]"
+                replacement = rf"\1RESOURCETYPE = '{azure_value}'"
+                sql = re.sub(pattern, replacement, sql, flags=re.IGNORECASE)
+                
+                # Also handle AND clauses
+                pattern = rf"(FROM\s+azure_cost_usage[^F]*?)\s+AND\s+RESOURCETYPE\s*=\s*['\"]({re.escape(user_term)})['\"]"
+                replacement = rf"\1 AND RESOURCETYPE = '{azure_value}'"
+                sql = re.sub(pattern, replacement, sql, flags=re.IGNORECASE)
+        
+        return sql
+    
     def _get_schema_context(self) -> str:
         """Get formatted schema information for LLM context"""
         context = ""
@@ -564,7 +664,10 @@ Generate ONLY the SQL query without any explanation or markdown formatting:"""
         # 3. Normalize region filters
         sql = self._normalize_region_filter(sql)
         
-        # 4. Remove extra semicolons and whitespace
+        # 4. Normalize resource type filters
+        sql = self._normalize_resourcetype_filter(sql)
+        
+        # 5. Remove extra semicolons and whitespace
         sql = sql.strip().rstrip(';').strip()
         
         # 5. Validate basic SQL structure

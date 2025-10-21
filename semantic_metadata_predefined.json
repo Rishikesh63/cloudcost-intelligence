@@ -94,12 +94,21 @@
         ]
       },
       "resourcetype": {
-        "description": "Type of cloud resource",
+        "description": "Type of cloud resource (AWS: 'instance' for EC2, 'bucket' for S3, 'volume' for EBS; many records have empty values)",
         "aliases": [
           "resource",
-          "instance type"
+          "instance type",
+          "ec2",
+          "s3",
+          "ebs"
         ],
-        "data_type": "TEXT"
+        "data_type": "TEXT",
+        "examples": [
+          "instance",
+          "bucket",
+          "volume",
+          "distribution"
+        ]
       },
       "billing_period_start": {
         "description": "Start date of the billing period",
@@ -246,12 +255,21 @@
         ]
       },
       "resourcetype": {
-        "description": "Type of Azure resource",
+        "description": "Type of Azure resource (e.g., 'Virtual machine', 'Storage account', 'Disk', 'Key vault')",
         "aliases": [
           "resource",
-          "instance type"
+          "instance type",
+          "vm",
+          "virtual machine"
         ],
-        "data_type": "TEXT"
+        "data_type": "TEXT",
+        "examples": [
+          "Virtual machine",
+          "Storage account",
+          "Disk",
+          "Key vault",
+          "App Service web app"
+        ]
       },
       "billing_period_start": {
         "description": "Start date of the billing period",
