@@ -1,20 +1,21 @@
 """
 FastAPI Endpoint for CloudCost Intelligence Text2SQL Engine
 RESTful API for natural language querying of cloud cost data
+Enhanced with dynamic clarification, SQL validation, and semantic metadata
 """
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional, Any
+from typing import Optional, Any, List, Dict
 import uvicorn
 from text2sql_engine import Text2SQLEngine
 
 
 app = FastAPI(
     title="CloudCost Intelligence API",
-    description="Natural language to SQL API for cloud cost analytics",
-    version="1.0.0"
+    description="Natural language to SQL API for cloud cost analytics with intelligent clarification",
+    version="2.0.0"
 )
 
 # Enable CORS
@@ -34,6 +35,22 @@ class QueryRequest(BaseModel):
     """Natural language query request"""
     question: str
     explain: Optional[bool] = True
+    provider_context: Optional[str] = None  # 'aws', 'azure', or 'both'
+
+
+class ClarificationOption(BaseModel):
+    """Clarification option"""
+    value: str
+    label: str
+
+
+class ClarificationResponse(BaseModel):
+    """Response when clarification is needed"""
+    needs_clarification: bool
+    question: Optional[str] = None
+    options: List[ClarificationOption] = []
+    missing_context: List[str] = []
+    original_query: str
 
 
 class QueryResponse(BaseModel):
@@ -44,6 +61,16 @@ class QueryResponse(BaseModel):
     row_count: int
     results: Optional[Any] = None
     explanation: Optional[str] = None
+    warning: Optional[str] = None
+    used_tables: List[str] = []
+    query_metadata: Optional[Dict] = None
+
+
+class ClarificationRequest(BaseModel):
+    """Request to apply clarification context"""
+    original_query: str
+    context_key: str
+    context_value: str
 
 
 @app.on_event("startup")

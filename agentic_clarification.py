@@ -1,34 +1,49 @@
 """
 Agentic Clarification Module
 Detects ambiguous queries and asks follow-up questions before execution
+Now with dynamic option generation based on actual database content
 """
 
-from typing import Dict
+from typing import Dict, Optional
 import re
+from database_manager import DatabaseManager
+from semantic_metadata import SemanticMetadataManager
 
 
 class AgenticClarifier:
     """
     Intelligent query clarification agent that detects ambiguous queries
-    and asks follow-up questions to gather missing context
+    and asks follow-up questions to gather missing context.
+    Generates clarification options dynamically based on database content.
     """
     
-    def __init__(self):
+    def __init__(self, db_manager: Optional[DatabaseManager] = None, metadata_manager: Optional[SemanticMetadataManager] = None):
         self.clarification_needed = False
         self.clarification_question = None
         self.clarification_options = []
         self.missing_context = []
+        
+        # Initialize database and metadata managers
+        self.db_manager = db_manager or self._init_db_manager()
+        self.metadata_manager = metadata_manager or SemanticMetadataManager()
     
-    def analyze_query(self, query: str) -> Dict:
+    def _init_db_manager(self) -> DatabaseManager:
+        """Initialize database manager if not provided"""
+        db = DatabaseManager()
+        db.connect()
+        return db
+    
+    def analyze_query(self, query: str, provider_context: Optional[str] = None) -> Dict:
         """
-        Analyze a natural language query for ambiguities
+        Analyze query for ambiguities and determine needed clarifications.
+        Now generates options dynamically from database.
+        
+        Args:
+            query: User's natural language query
+            provider_context: Optional provider context (aws/azure/both)
         
         Returns:
-            Dict with:
-            - needs_clarification: bool
-            - question: str (follow-up question)
-            - options: list (available options)
-            - missing_context: list (what's missing)
+            Dict with clarification details
         """
         query_lower = query.lower()
         
@@ -38,43 +53,37 @@ class AgenticClarifier:
         self.clarification_options = []
         self.missing_context = []
         
-        # Check 1: Missing time range for cost queries
-        if self._is_cost_query(query_lower) and not self._has_time_range(query_lower):
-            self.clarification_needed = True
-            self.missing_context.append("time_range")
-            self.clarification_question = "Which time range would you like me to use?"
-            self.clarification_options = [
-                {"value": "last_7_days", "label": "Last 7 days"},
-                {"value": "last_30_days", "label": "Last 30 days"},
-                {"value": "last_90_days", "label": "Last 90 days"},
-                {"value": "this_month", "label": "This month"},
-                {"value": "last_month", "label": "Last month"},
-                {"value": "year_to_date", "label": "Year to date (YTD)"},
-                {"value": "all_time", "label": "All available data"}
-            ]
-            return self._build_response()
+        # Determine which tables to query based on provider context
+        tables = self._get_tables_for_query(query_lower, provider_context)
         
-        # Check 2: Missing cloud provider (AWS vs Azure)
-        if self._mentions_service(query_lower) and not self._has_provider(query_lower):
+        # Check 1: Provider not specified
+        if not self._has_provider(query_lower) and not provider_context:
             self.clarification_needed = True
             self.missing_context.append("provider")
             self.clarification_question = "Which cloud provider would you like to analyze?"
             self.clarification_options = [
-                {"value": "aws", "label": "AWS (Amazon Web Services)"},
-                {"value": "azure", "label": "Azure (Microsoft Azure)"},
-                {"value": "both", "label": "Both AWS and Azure"}
+                {"value": "both", "label": "Both AWS and Azure"},
+                {"value": "aws", "label": "AWS only"},
+                {"value": "azure", "label": "Azure only"}
             ]
             return self._build_response()
         
-        # Check 3: Ambiguous "cost" without specifying metric type
-        if self._has_multiple_cost_types_available(query_lower):
+        # Check 2: Regional queries without specifying region (check before time range)
+        if self._is_regional_query(query_lower) and not self._has_specific_region(query_lower):
             self.clarification_needed = True
-            self.missing_context.append("cost_metric")
-            self.clarification_question = "Which cost metric would you like to use?"
-            self.clarification_options = [
-                {"value": "billedcost", "label": "Billed Cost (actual invoice amount)"},
-                {"value": "effectivecost", "label": "Effective Cost (with discounts applied)"}
-            ]
+            self.missing_context.append("region")
+            self.clarification_question = "Which region would you like to analyze?"
+            # Generate dynamic region options based on available data
+            self.clarification_options = self._get_dynamic_regions(tables)
+            return self._build_response()
+        
+        # Check 3: Time range not specified for cost queries
+        if self._is_cost_query(query_lower) and not self._has_time_range(query_lower):
+            self.clarification_needed = True
+            self.missing_context.append("time_range")
+            self.clarification_question = "What time period would you like to analyze?"
+            # Generate dynamic time range options based on available data
+            self.clarification_options = self._get_dynamic_time_ranges(tables)
             return self._build_response()
         
         # Check 4: Top N queries without specifying N
@@ -90,20 +99,6 @@ class AgenticClarifier:
             ]
             return self._build_response()
         
-        # Check 5: Regional queries without specifying region
-        if self._is_regional_query(query_lower) and not self._has_specific_region(query_lower):
-            self.clarification_needed = True
-            self.missing_context.append("region")
-            self.clarification_question = "Which region would you like to analyze?"
-            self.clarification_options = [
-                {"value": "all", "label": "All regions"},
-                {"value": "us-east-1", "label": "US East (N. Virginia)"},
-                {"value": "us-west-2", "label": "US West (Oregon)"},
-                {"value": "eu-west-1", "label": "EU (Ireland)"},
-                {"value": "ap-southeast-2", "label": "Asia Pacific (Sydney)"}
-            ]
-            return self._build_response()
-        
         # No clarification needed
         return {
             "needs_clarification": False,
@@ -111,6 +106,110 @@ class AgenticClarifier:
             "options": [],
             "missing_context": []
         }
+    
+    def _get_tables_for_query(self, query: str, provider_context: Optional[str] = None) -> list:
+        """Determine which tables to query based on provider context"""
+        if provider_context == "aws":
+            return ["aws_cost_usage"]
+        elif provider_context == "azure":
+            return ["azure_cost_usage"]
+        elif provider_context == "both":
+            return ["aws_cost_usage", "azure_cost_usage"]
+        
+        # Infer from query
+        if "aws" in query or "amazon" in query:
+            return ["aws_cost_usage"]
+        elif "azure" in query or "microsoft" in query:
+            return ["azure_cost_usage"]
+        else:
+            return ["aws_cost_usage", "azure_cost_usage"]
+    
+    def _get_dynamic_time_ranges(self, tables: list) -> list:
+        """Generate time range options based on actual data in the database"""
+        try:
+            all_dates = []
+            for table in tables:
+                query = f"""
+                    SELECT 
+                        MIN(billingperiodstart) as min_date,
+                        MAX(billingperiodend) as max_date
+                    FROM {table}
+                    WHERE billingperiodstart IS NOT NULL
+                """
+                result = self.db_manager.execute_query(query)
+                if result is not None and not result.empty:
+                    all_dates.append(result.iloc[0])
+            
+            if not all_dates:
+                # Fallback to default options if no data
+                return self._get_default_time_ranges()
+            
+            # Build dynamic options based on available date range
+            # For now, use sensible defaults but this could be further enhanced
+            return [
+                {"value": "last_7_days", "label": "Last 7 days"},
+                {"value": "last_30_days", "label": "Last 30 days"},
+                {"value": "last_90_days", "label": "Last 90 days"},
+                {"value": "this_month", "label": "This month"},
+                {"value": "last_month", "label": "Last month"},
+                {"value": "year_to_date", "label": "Year to date"},
+                {"value": "all_time", "label": "All available data"}
+            ]
+        except Exception as e:
+            print(f"Error getting dynamic time ranges: {e}")
+            return self._get_default_time_ranges()
+    
+    def _get_default_time_ranges(self) -> list:
+        """Get default time range options"""
+        return [
+            {"value": "last_7_days", "label": "Last 7 days"},
+            {"value": "last_30_days", "label": "Last 30 days"},
+            {"value": "last_90_days", "label": "Last 90 days"},
+            {"value": "this_month", "label": "This month"},
+            {"value": "last_month", "label": "Last month"},
+            {"value": "year_to_date", "label": "Year to date"},
+            {"value": "all_time", "label": "All available data"}
+        ]
+    
+    def _get_dynamic_regions(self, tables: list) -> list:
+        """Generate region options based on actual data in the database"""
+        try:
+            all_regions = set()
+            for table in tables:
+                query = f"""
+                    SELECT DISTINCT regionname
+                    FROM {table}
+                    WHERE regionname IS NOT NULL AND regionname != ''
+                    ORDER BY regionname
+                    LIMIT 20
+                """
+                result = self.db_manager.execute_query(query)
+                if result is not None and not result.empty:
+                    all_regions.update(result['regionname'].tolist())
+            
+            if not all_regions:
+                # Fallback to default options if no data
+                return self._get_default_regions()
+            
+            # Build options from actual regions
+            options = [{"value": "all", "label": "All regions"}]
+            for region in sorted(all_regions)[:10]:  # Limit to top 10 for UI
+                options.append({"value": region, "label": region})
+            
+            return options
+        except Exception as e:
+            print(f"Error getting dynamic regions: {e}")
+            return self._get_default_regions()
+    
+    def _get_default_regions(self) -> list:
+        """Get default region options"""
+        return [
+            {"value": "all", "label": "All regions"},
+            {"value": "us-east-1", "label": "US East (N. Virginia)"},
+            {"value": "us-west-2", "label": "US West (Oregon)"},
+            {"value": "eu-west-1", "label": "EU (Ireland)"},
+            {"value": "ap-southeast-2", "label": "Asia Pacific (Sydney)"}
+        ]
     
     def _build_response(self) -> Dict:
         """Build clarification response"""
@@ -147,14 +246,40 @@ class AgenticClarifier:
         return any(re.search(pattern, query) for pattern in time_patterns)
     
     def _mentions_service(self, query: str) -> bool:
-        """Check if query mentions a specific service"""
-        service_keywords = ["ec2", "s3", "rds", "lambda", "vm", "virtual machine", "storage"]
-        return any(keyword in query for keyword in service_keywords)
+        """Check if query mentions a SPECIFIC service (not the generic word 'service')"""
+        # Only trigger if user mentions a specific service name
+        # NOT if they just say "services" or "service" generically
+        specific_service_keywords = [
+            "ec2", "s3", "rds", "lambda", "dynamodb", "cloudfront", "route53",
+            "vm", "virtual machine", "blob storage", "cosmos", "sql database",
+            "compute", "storage account", "app service"
+        ]
+        
+        # Check if any specific service is mentioned
+        for keyword in specific_service_keywords:
+            if keyword in query:
+                return True
+        
+        # Don't trigger for generic "service" or "services" 
+        # (which is just asking to see all services)
+        return False
     
     def _has_provider(self, query: str) -> bool:
         """Check if query specifies cloud provider"""
         providers = ["aws", "amazon", "azure", "microsoft"]
         return any(provider in query for provider in providers)
+    
+    def _is_generic_service_query(self, query: str) -> bool:
+        """Check if query is asking generically about services (not a specific service)"""
+        # Queries like "show me services", "list services", "top services"
+        generic_patterns = [
+            r'\bservices?\b.*\bby\s+cost\b',  # "services by cost"
+            r'\btop\s+\d*\s*services?\b',      # "top 10 services"
+            r'\blist\s+services?\b',           # "list services"
+            r'\bshow\s+.*\bservices?\b',       # "show me services"
+            r'\ball\s+services?\b',            # "all services"
+        ]
+        return any(re.search(pattern, query) for pattern in generic_patterns)
     
     def _has_multiple_cost_types_available(self, query: str) -> bool:
         """Check if multiple cost types are available and not specified"""
@@ -281,7 +406,7 @@ if __name__ == "__main__":
     ]
     
     print("=" * 70)
-    print("  Agentic Clarification - Test Cases")
+    print("  Agentic Clarification - Test Cases (Dynamic Options)")
     print("=" * 70)
     
     for query in test_queries:

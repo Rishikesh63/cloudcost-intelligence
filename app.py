@@ -214,42 +214,160 @@ def main():
     with col1:
         execute_button = st.button("▶️ Execute Query", type="primary", use_container_width=True)
     
-    # Execute query
+    # Execute query with clarification
     if execute_button and natural_query:
-        with st.spinner("🔄 Converting to SQL and executing query..."):
-            try:
-                result = engine.execute_natural_query(natural_query)
+        # Step 1: Check if clarification is needed
+        clarification = engine.check_clarification_needed(natural_query)
+        
+        if clarification['needs_clarification']:
+            # Show clarification question
+            st.warning("🤔 Your query needs clarification")
+            st.markdown(f"**{clarification['question']}**")
+            
+            # Store clarification in session state
+            st.session_state.clarification_pending = True
+            st.session_state.clarification_data = clarification
+            st.session_state.original_query = natural_query
+            # Clear any previous results
+            if 'last_result' in st.session_state:
+                del st.session_state.last_result
+        else:
+            # No clarification needed, execute directly
+            with st.spinner("🔄 Converting to SQL and executing query..."):
+                try:
+                    result = engine.execute_natural_query(natural_query)
+                    
+                    # Store result in session state to persist across reruns
+                    st.session_state.last_result = result
+                    st.session_state.last_query = natural_query
+                    
+                    # Store in session state for history
+                    if 'query_history' not in st.session_state:
+                        st.session_state.query_history = []
+                    
+                    st.session_state.query_history.append({
+                        'natural': natural_query,
+                        'sql': result['sql_query'],
+                        'method': result['method'],
+                        'rows': result['row_count']
+                    })
+                    
+                except Exception as e:
+                    st.error(f"Error: {str(e)}")
+                    st.exception(e)
+    
+    # Display last result if it exists (persists across reruns)
+    if 'last_result' in st.session_state and st.session_state.last_result is not None:
+        result = st.session_state.last_result
+        
+        # Display SQL query
+        st.subheader("🔧 Generated SQL Query")
+        st.code(result['sql_query'], language='sql')
+        
+        # Show warning if date filter was removed
+        if result.get('warning'):
+            st.warning(result['warning'])
+        
+        # Show semantic metadata used for THIS query
+        if result.get('query_metadata'):
+            with st.expander("🧠 Semantic Metadata Used for This Query", expanded=False):
+                st.markdown("""
+                This shows the semantic understanding that the AI used to generate the SQL query above.
+                """)
                 
-                # Display SQL query
-                st.subheader("🔧 Generated SQL Query")
-                st.code(result['sql_query'], language='sql')
+                query_metadata = result['query_metadata']
                 
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.info(f"**Conversion Method:** {result['method']}")
-                with col2:
-                    st.info(f"**Rows Returned:** {result['row_count']}")
-                
-                # Display results
-                if result['results'] is not None:
-                    display_results(result)
-                else:
-                    st.error("Query execution failed. Please try a different question.")
-                
-                # Store in session state for history
-                if 'query_history' not in st.session_state:
-                    st.session_state.query_history = []
-                
-                st.session_state.query_history.append({
-                    'natural': natural_query,
-                    'sql': result['sql_query'],
-                    'method': result['method'],
-                    'rows': result['row_count']
-                })
-                
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
-                st.exception(e)
+                for table_name, table_meta in query_metadata.items():
+                    st.subheader(f"📊 {table_name}")
+                    st.markdown(f"**Description:** {table_meta['description']}")
+                    st.markdown(f"**Aliases:** {', '.join(table_meta['aliases'])}")
+                    
+                    st.markdown("### 🔑 Key Columns")
+                    
+                    # Show important columns
+                    important_cols = ['billedcost', 'servicename', 'regionname', 'subaccountname']
+                    for col in important_cols:
+                        if col in table_meta['columns']:
+                            col_meta = table_meta['columns'][col]
+                            with st.container():
+                                st.markdown(f"**`{col}`** ({col_meta.get('data_type', 'TEXT')})")
+                                st.markdown(f"_{col_meta.get('description', 'No description')}_")
+                                if 'aliases' in col_meta:
+                                    st.caption(f"💡 Aliases: {', '.join(col_meta['aliases'][:5])}")
+                                st.divider()
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.info(f"**Conversion Method:** {result['method']}")
+        with col2:
+            st.info(f"**Rows Returned:** {result['row_count']}")
+        
+        # Display results
+        if result['results'] is not None:
+            display_results(result)
+        else:
+            st.error("Query execution failed. Please try a different question.")
+    
+    # Handle clarification response
+    if st.session_state.get('clarification_pending', False):
+        clarification_data = st.session_state.clarification_data
+        original_query = st.session_state.original_query
+        
+        # Create selectbox for options
+        selected_option = st.selectbox(
+            "Please select an option:",
+            options=[opt['label'] for opt in clarification_data['options']],
+            key="clarification_select"
+        )
+        
+        if st.button("✅ Apply Selection and Execute", type="primary"):
+            # Find selected value
+            selected_value = next(
+                opt['value'] for opt in clarification_data['options'] 
+                if opt['label'] == selected_option
+            )
+            
+            # Apply context to query
+            enhanced_query = engine.apply_clarification(
+                original_query,
+                clarification_data['missing_context'][0],
+                selected_value
+            )
+            
+            # Execute the enhanced query
+            with st.spinner("🔄 Executing enhanced query..."):
+                try:
+                    result = engine.execute_natural_query(enhanced_query)
+                    
+                    # Store result in session state to persist
+                    st.session_state.last_result = result
+                    st.session_state.last_query = enhanced_query
+                    
+                    # Clear clarification state
+                    st.session_state.clarification_pending = False
+                    
+                    # Store in history
+                    if 'query_history' not in st.session_state:
+                        st.session_state.query_history = []
+                    
+                    st.session_state.query_history.append({
+                        'natural': enhanced_query,
+                        'sql': result['sql_query'],
+                        'method': result['method'],
+                        'rows': result['row_count']
+                    })
+                    
+                    # Rerun to show results
+                    st.rerun()
+                    
+                    # Clear clarification state
+                    st.session_state.clarification_pending = False
+                    
+                except Exception as e:
+                    st.error(f"Error: {str(e)}")
+            
+            # Force rerun to clear clarification UI
+            st.rerun()
     
     # Query history
     if 'query_history' in st.session_state and st.session_state.query_history:
@@ -271,21 +389,21 @@ def main():
         
         with col1:
             st.subheader("AWS Data")
-            aws_count = db.execute_query("SELECT COUNT(*) as count FROM aws_cost")
+            aws_count = db.execute_query("SELECT COUNT(*) as count FROM aws_cost_usage")
             if aws_count is not None:
                 st.metric("Total Records", f"{aws_count['count'][0]:,}")
             
-            aws_cost = db.execute_query("SELECT SUM(billedcost) as total FROM aws_cost")
+            aws_cost = db.execute_query("SELECT SUM(billedcost) as total FROM aws_cost_usage")
             if aws_cost is not None:
                 st.metric("Total Cost", format_currency(aws_cost['total'][0]))
         
         with col2:
             st.subheader("Azure Data")
-            azure_count = db.execute_query("SELECT COUNT(*) as count FROM azure_cost")
+            azure_count = db.execute_query("SELECT COUNT(*) as count FROM azure_cost_usage")
             if azure_count is not None:
                 st.metric("Total Records", f"{azure_count['count'][0]:,}")
             
-            azure_cost = db.execute_query("SELECT SUM(billedcost) as total FROM azure_cost")
+            azure_cost = db.execute_query("SELECT SUM(billedcost) as total FROM azure_cost_usage")
             if azure_cost is not None:
                 st.metric("Total Cost", format_currency(azure_cost['total'][0]))
         
